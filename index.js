@@ -1,4 +1,3 @@
-// TODO: Check why whit 000 and slider to 0% the altered color become null
 window.onload = function () {
   
   // Get the element from the document
@@ -8,6 +7,9 @@ window.onload = function () {
   const alteredColorText = document.getElementById('alteredColorText');
   const sliderText = document.getElementById('sliderText');
   const slider = document.getElementById('slider');
+  const lightenText = document.getElementById('lightenText');
+  const darkenText = document.getElementById('darkenText');
+  const toggleBtn = document.getElementById('toggleBtn');
 
   // Add an event listener for the key up event to the hexInput input
   hexInput.addEventListener('keyup', () => {
@@ -18,7 +20,10 @@ window.onload = function () {
     hexValue = hexValue.replace('#', '');
   
     // Change the background of the box
-    inputColorBox.style.backgroundColor = '#' + hexValue
+    inputColorBox.style.backgroundColor = '#' + hexValue;
+    alteredColorBox.style.backgroundColor = '#' + hexValue;
+    sliderText.textContent = '0%';
+    slider.value = 0;
   })
   
   // Add an event listener to the slider
@@ -29,11 +34,27 @@ window.onload = function () {
     
     // Check that the hex in the hexInput field is valid
     if (!isValidHex(hexInput.value)) return;
-      
-    const alteredHex = alterColor(hexInput.value, slider.value);
+    
+    const sliderValue = toggleBtn.classList.contains('toggled') ? -slider.value : slider.value;
+    const alteredHex = alterColor(hexInput.value, sliderValue);
     alteredColorBox.style.backgroundColor = alteredHex;
     alteredColorText.innerText = 'Altered Color ' + alteredHex;
     
+  })
+  
+  // Add an event listener to the toggle button
+  toggleBtn.addEventListener('click', () => {
+    toggleBtn.classList.toggle('toggled');
+    lightenText.classList.toggle('unselected');
+    darkenText.classList.toggle('unselected');
+    
+    // reset slider, sliderText and alteredColorBox's color
+    const hexValue = hexInput.value;
+    if (!isValidHex(hexValue)) return;
+    alteredColorBox.style.backgroundColor = hexValue;
+    alteredColorText.innerText = 'Altered Color ' + hexValue;
+    sliderText.textContent = '0%'
+    slider.value = 0;
   })
   
   // Compute altered color
@@ -44,15 +65,15 @@ window.onload = function () {
     const amount = Math.floor(percentage / 100 * 255);
     
     return convertRGBToHex(
-      increasWithinRange00_ff(r, amount),
-      increasWithinRange00_ff(g, amount),
-      increasWithinRange00_ff(b, amount)
+      increasWithinRange0_255(r, amount),
+      increasWithinRange0_255(g, amount),
+      increasWithinRange0_255(b, amount)
     )
     
   }
   
   // Check that the sum stay in the range 0-255
-  const increasWithinRange00_ff = (num, amount) => {
+  const increasWithinRange0_255 = (num, amount) => {
     
     /*num += amount;
     
@@ -88,17 +109,16 @@ window.onload = function () {
         + strippedHex[2] + strippedHex[2];
     }
     
-    const r = parseInt(strippedHex.substring(0, 2));
-    const g = parseInt(strippedHex.substring(2, 4));
-    const b = parseInt(strippedHex.substring(4, 6));
+    console.log(strippedHex.substring(0, 2));
+    const r = parseInt(strippedHex.substring(0, 2), 16);
+    const g = parseInt(strippedHex.substring(2, 4), 16);
+    const b = parseInt(strippedHex.substring(4, 6), 16);
     
     return {r, g, b};
   }
   
   // Convert an RGB value to an hex one
   const convertRGBToHex = (r, g, b) => {
-    
-    if (!r || !g || !b) return null;
     
     let firstPair = ('0' + r.toString(16)).slice(-2);
     let secondPair = ('0' + g.toString(16)).slice(-2);
