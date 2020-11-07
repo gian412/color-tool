@@ -24,7 +24,7 @@ window.onload = function () {
     const strippedHex = hex.replace('#', '');
     return strippedHex.length === 3 || strippedHex.length === 6;
   
-    // TODO: CHeck that is a valid hex ([0-9], [a-f])
+    // TODO: Check that is a valid hex ([0-9], [a-f])
   
   }
   
@@ -46,6 +46,17 @@ window.onload = function () {
     const b = parseInt(strippedHex.substring(4, 6));
     
     return {r, g, b};
+  }
+  
+  const convertRGBToHex = (r, g, b) => {
+    
+    if (!r || !g || !b) return null;
+    
+    let firstPair = ('0' + r.toString(16)).slice(-2);
+    let secondPair = ('0' + g.toString(16)).slice(-2);
+    let thirdPair = ('0' + b.toString(16)).slice(-2);
+    
+    return '#' + firstPair + secondPair + thirdPair
   }
   
 }
