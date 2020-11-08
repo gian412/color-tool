@@ -90,9 +90,9 @@ window.onload = function () {
     if (!hex) return false;
   
     const strippedHex = hex.replace('#', '');
+    const invalidCharacters = /[g-z]/;
+    if (invalidCharacters.test(strippedHex)) return false;
     return strippedHex.length === 3 || strippedHex.length === 6;
-  
-    // TODO: Check that is a valid hex ([0-9], [a-f])
   
   }
   
